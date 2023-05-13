@@ -23,7 +23,7 @@ const CheckOut = () => {
             service_id: _id,
             img
         }
-        fetch(' https://cars-doctors-18420.web.app/booking', {
+        fetch(' https://car-doctor-server-flax-omega.vercel.app/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

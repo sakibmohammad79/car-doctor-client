@@ -13,7 +13,7 @@ const Booking = () => {
     const navigate = useNavigate();
 
     useEffect(()=> {
-      fetch(` https://cars-doctors-18420.web.app/booking?email=${user.email}`, {
+      fetch(` https://car-doctor-server-flax-omega.vercel.app/booking?email=${user.email}`, {
         method: 'GET',
         headers: {
           authorization: `Bearer ${localStorage.getItem('car-access-token')}`
@@ -34,7 +34,7 @@ const Booking = () => {
     const handleDelete = (id) => {
         const procced = confirm('are you sure you went to delete');
         if(procced){
-            fetch(` https://cars-doctors-18420.web.app/booking/${id}`,{
+            fetch(` https://car-doctor-server-flax-omega.vercel.app/booking/${id}`,{
                 method: 'DELETE'
             })
             .then(res => res.json())
@@ -54,7 +54,7 @@ const Booking = () => {
            
     }
     const handleConfirm = (id) => {
-        fetch(` https://cars-doctors-18420.web.app/booking/${id}`,{
+        fetch(` https://car-doctor-server-flax-omega.vercel.app/booking/${id}`,{
             method: 'PATCH',
             headers: {
                 'content-type': 'application/json'

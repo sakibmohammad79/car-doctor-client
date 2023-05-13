@@ -48,7 +48,7 @@ const AuthProviders = ({ children }) => {
         const loggedUser ={
             email: currentUser.email
           }
-        fetch(" https://cars-doctors-18420.web.app/jwt", {
+        fetch(" https://car-doctor-server-flax-omega.vercel.app/jwt", {
           method: "POST",
           headers: {
             "content-type": "application/json",
