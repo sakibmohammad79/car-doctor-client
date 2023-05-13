@@ -2,23 +2,39 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProviders";
 import BookinRow from "./BookinRow";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 
 const Booking = () => {
     const {user} = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
 
+    const navigate = useNavigate();
+
     useEffect(()=> {
-      fetch(`http://localhost:5000/booking?email=${user.email}`)
+      fetch(` https://cars-doctors-18420.web.app/booking?email=${user.email}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('car-access-token')}`
+        }
+      })
       .then(res => res.json())
-      .then(data => setBookings(data))
+      .then(data => {
+        if(!data.error){
+          setBookings(data)
+        }
+        else{
+          navigate('/')
+        }
+      })
   },[])
   console.log(bookings);
 
     const handleDelete = (id) => {
         const procced = confirm('are you sure you went to delete');
         if(procced){
-            fetch(`http://localhost:5000/booking/${id}`,{
+            fetch(` https://cars-doctors-18420.web.app/booking/${id}`,{
                 method: 'DELETE'
             })
             .then(res => res.json())
@@ -38,7 +54,7 @@ const Booking = () => {
            
     }
     const handleConfirm = (id) => {
-        fetch(`http://localhost:5000/booking/${id}`,{
+        fetch(` https://cars-doctors-18420.web.app/booking/${id}`,{
             method: 'PATCH',
             headers: {
                 'content-type': 'application/json'

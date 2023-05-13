@@ -1,51 +1,86 @@
 import { createContext, useEffect, useState } from "react";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import {  createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import app from "../firebase/firebase.config";
 
 export const AuthContext = createContext();
 const auth = getAuth(app);
-const AuthProviders = ({children}) => {
-    const [user, setUser] = useState();
-    const [loading, setLoading] = useState(true);
+const AuthProviders = ({ children }) => {
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
 
-    const handleSignUp = (email, password) => {
-        setLoading(true);
-       return createUserWithEmailAndPassword(auth, email, password);
-    }
+  const provider = new GoogleAuthProvider();
 
-    const handleSignIn = (email, password) => {
-        setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password);
-    }
+  const handleSignUp = (email, password) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-    const logOut = () =>{
-        setLoading(true);
-       return signOut(auth) 
-    }
+  const handleSignIn = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-    useEffect(()=>{
-        const unsubscibe = onAuthStateChanged(auth, currentUser =>{
-            setUser(currentUser);
-            setLoading(false);
+  const handleGoogleLogin = () => {
+    setLoading(true);
+    return signInWithPopup(auth, provider);
+  };
+
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
+
+  useEffect(() => {
+    const unsubscibe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+      if (currentUser && currentUser.email) {
+        const loggedUser ={
+            email: currentUser.email
+          }
+        fetch(" https://cars-doctors-18420.web.app/jwt", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(loggedUser),
         })
-        return () => {
-            return unsubscibe();
-        }
-    },[])
-    
-    const userInfo = {
-        user,
-        handleSignUp,
-        loading,
-        handleSignIn,
-        logOut
-    }
-    return (
-        <AuthContext.Provider value={userInfo}>
-            {children}
-        </AuthContext.Provider>
-    );
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("fwt response", data);
+            localStorage.setItem("car-access-token", data.token);
+          });
+      }
+      else{
+        localStorage.removeItem('car-access-token');
+      }
+    });
+    return () => {
+      return unsubscibe();
+    };
+  }, []);
+
+  const userInfo = {
+    user,
+    handleSignUp,
+    loading,
+    handleSignIn,
+    handleGoogleLogin,
+    logOut,
+  };
+  return (
+    <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProviders;

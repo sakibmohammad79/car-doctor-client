@@ -23,7 +23,7 @@ const CheckOut = () => {
             service_id: _id,
             img
         }
-        fetch('http://localhost:5000/booking', {
+        fetch(' https://cars-doctors-18420.web.app/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import image from '../../assets/images/login/login.svg'
 import { AuthContext } from '../../Providers/AuthProviders';
 import { useContext } from 'react';
+import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 
 const SignUp = () => {
     const {handleSignUp} = useContext(AuthContext);
@@ -23,6 +24,7 @@ const SignUp = () => {
         console.log(error.message);
        })
     }
+    
     return (
         <div className="hero min-h-screen bg-base-200 my-12">
         <div className="hero-content flex-col lg:flex-row">
@@ -59,6 +61,7 @@ const SignUp = () => {
               </div>
               </form>
               <p className='font-bold text-center my-4'>Already Have An Account? <Link className='text-orange-500' to='/login'>Login</Link></p>
+              <SocialLogin></SocialLogin>
             </div>
           </div>
         </div>
